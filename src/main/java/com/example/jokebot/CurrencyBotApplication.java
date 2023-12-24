@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JokeBotApplication {
+public class CurrencyBotApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JokeBotApplication.class, args);
+		SpringApplication.run(CurrencyBotApplication.class, args);
 	}
 
 }
