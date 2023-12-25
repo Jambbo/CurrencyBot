@@ -1,20 +1,23 @@
 package com.example.jokebot.bot;
 
-import com.example.jokebot.configuration.BotConfig;
+import com.example.jokebot.configuration.ExchangeRatesBotConfiguration;
 import com.example.jokebot.exception.ServiceException;
 import com.example.jokebot.service.ExchangeRatesService;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ExchangeRatesBot extends TelegramLongPollingBot {
@@ -29,9 +32,18 @@ public class ExchangeRatesBot extends TelegramLongPollingBot {
 
 
 
-
     public ExchangeRatesBot(@Value("${bot.token}")String botToken){
-        super(botToken);
+            super(botToken);
+        List<BotCommand> listofCommands = new ArrayList<>();
+        listofCommands.add(new BotCommand("/start", "get a welcome message"));
+        listofCommands.add(new BotCommand("/usd", "get an exchange rate of dollar"));
+        listofCommands.add(new BotCommand("/eur", "get an exchange rate of dollar"));
+        listofCommands.add(new BotCommand("/help", "info how to use this bot"));
+        try {
+            this.execute(new SetMyCommands(listofCommands, new BotCommandScopeDefault(), null));
+        } catch (TelegramApiException e) {
+        }
+
     }
     @Override
     public void onUpdateReceived(Update update) {
@@ -65,6 +77,7 @@ public class ExchangeRatesBot extends TelegramLongPollingBot {
         var formattedText = String.format(text,userName);
         sendMessage(chatId,formattedText);
     }
+
     public void helpCommand(Long chatId){
         var text = """
                 Для получения текующих курсов валют воспользуйтесь коммандами: 
